@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flash Generator Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Calibri', Arial, sans-serif;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card h2 {
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #2c3e50;
+        }
+
+        .card h3 {
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 20px;
+            color: #34495e;
+        }
+
+        /* Login Page Styles */
+        .login-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            max-width: 400px;
+            margin: 10% auto;
+        }
+
+        /* Level 1 Page Styles */
+        .my-flash-card {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+        }
+
+        .library-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        /* Level 2 Page Styles */
+        .create-card {
+            background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%);
+        }
+
+        .preview-card {
+            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+        }
+
+        /* Level 3 Page Styles */
+        .admin-user-card {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .admin-template-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        .input-field, .select-field, .textarea-field {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            font-family: 'Calibri', Arial, sans-serif;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus, .select-field:focus, .textarea-field:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            font-family: 'Calibri', Arial, sans-serif;
+            transition: all 0.3s ease;
+            margin: 5px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .success-btn {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+            color: white;
+        }
+
+        .danger-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white;
+        }
+
+        .warning-btn {
+            background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
+            color: white;
+        }
+
+        .info-btn {
+            background: linear-gradient(135deg, #45b7d1 0%, #96c93d 100%);
+            color: white;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-weight: bold;
+        }
+
+        .flash-item {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 15px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .flash-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .flash-info h4 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .flash-info small {
+            color: #7f8c8d;
+        }
+
+        .flash-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .small-btn {
+            padding: 8px 15px;
+            font-size: 12px;
+            border-radius: 20px;
+        }
+
+        .scrollable-content {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .scrollable-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scrollable-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .scrollable-content::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.6);
+            border-radius: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            color: white;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+        }
+
+        .close:hover {
+            opacity: 0.7;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-row .input-field {
+            flex: 1;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        .preview-content {
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .flash-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border-left: 5px solid #fff;
+        }
+
+        .flash-section h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="page active">
+        <div class="container">
+            <div class="card login-card">
+                <h2>🚀 Flash Generator Tool</h2>
+                <p style="margin-bottom: 30px;">Welcome to your creative workspace</p>
+                <input type="text" id="username" placeholder="Username" class="input-field">
+                <input type="password" id="password" placeholder="Password" class="input-field">
+                <button onclick="login()" class="btn primary-btn" style="width: 100%; margin-bottom: 15px;">Login</button>
+                <button onclick="showAdminLogin()" class="btn warning-btn" style="width: 100%;">🔐 Admin Access</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAdminModal()">&times;</span>
+            <h3>🔐 Admin Access</h3>
+            <p style="margin-bottom: 20px;">Enter admin key to access management panel</p>
+            <input type="password" id="adminKey" placeholder="Enter Admin Key" class="input-field">
+            <button onclick="adminLogin()" class="btn success-btn" style="width: 100%;">Access Admin Panel</button>
+        </div>
+    </div>
+
+    <!-- Level 1: Main Dashboard -->
+    <div id="level1Page" class="page">
+        <div class="container">
+            <div class="header">
+                <h1>⚡ Flash Dashboard</h1>
+                <div>
+                    <span id="currentUser" style="margin-right: 20px; font-weight: bold;"></span>
+                    <button onclick="logout()" class="btn danger-btn">Logout</button>
+                </div>
+            </div>
+
+            <!-- My Flash Section -->
+            <div class="card my-flash-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>📱 My Flash</h2>
+                    <button onclick="showLevel2()" class="btn success-btn">➕ New Flash</button>
+                </div>
+                <div class="scrollable-content" id="myFlashList">
+                    <!-- User's flash items will be populated here -->
+                </div>
+            </div>
+
+            <!-- Flash Library Section -->
+            <div class="card library-card">
+                <h2>📚 Flash Library</h2>
+                <div class="scrollable-content" id="flashLibrary">
+                    <!-- All flash items will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Level 2: Create/Edit Flash -->
+    <div id="level2Page" class="page">
+        <div class="container">
+            <div class="header">
+                <h1 id="level2Title">✨ Create Flash</h1>
+                <button onclick="showLevel1()" class="btn info-btn">← Back to Dashboard</button>
+            </div>
+
+            <div class="card create-card">
+                <h2>🎨 Flash Details</h2>
+                <div class="form-row">
+                    <input type="text" id="flashTitle" placeholder="Flash Title" class="input-field">
+                </div>
+                <div class="form-row">
+                    <select id="flashTemplate" class="select-field" onchange="updateContentFields()">
+                        <option value="">Select Template</option>
+                    </select>
+                </div>
+                <div id="contentFields" style="display: none;">
+                    <!-- Dynamic content fields will be populated here -->
+                </div>
+                <div style="display: flex; gap: 15px; margin-top: 25px;">
+                    <button onclick="previewFlash()" class="btn info-btn">👁️ Preview</button>
+                    <button onclick="publishFlash()" class="btn success-btn" id="publishBtn">🚀 Publish</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Level 3: Admin Panel -->
+    <div id="level3Page" class="page">
+        <div class="container">
+            <div class="header">
+                <h1>⚙️ Admin Management Panel</h1>
+                <button onclick="showLevel1()" class="btn info-btn">← Back to Dashboard</button>
+            </div>
+
+            <div class="grid-2">
+                <!-- User Management -->
+                <div class="card admin-user-card">
+                    <h2>👥 User Management</h2>
+                    <div class="form-row">
+                        <input type="text" id="newUsername" placeholder="Username" class="input-field">
+                    </div>
+                    <div class="form-row">
+                        <input type="password" id="newPassword" placeholder="Password" class="input-field">
+                    </div>
+                    <button onclick="addUser()" class="btn success-btn" style="width: 100%;">➕ Add User</button>
+                    
+                    <h3 style="margin-top: 25px;">Current Users</h3>
+                    <div class="scrollable-content" id="userList">
+                        <!-- Users will be listed here -->
+                    </div>
+                </div>
+
+                <!-- Template Management -->
+                <div class="card admin-template-card">
+                    <h2>🎭 Template Management</h2>
+                    <div class="form-row">
+                        <input type="text" id="templateTitle" placeholder="Template Title" class="input-field">
+                    </div>
+                    <div class="form-row">
+                        <input type="text" id="templatePrompt" placeholder="Template Prompt" class="input-field">
+                    </div>
+                    <div class="form-row">
+                        <textarea id="templateStructure" placeholder="Template Structure (comma separated fields)" class="textarea-field" rows="4"></textarea>
+                    </div>
+                    <button onclick="addTemplate()" class="btn success-btn" style="width: 100%;">➕ Add Template</button>
+                    
+                    <h3 style="margin-top: 25px;">Current Templates</h3>
+                    <div class="scrollable-content" id="templateList">
+                        <!-- Templates will be listed here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Preview Modal -->
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePreview()">&times;</span>
+            <h3>👁️ Flash Preview</h3>
+            <div class="preview-content" id="previewContent">
+                <!-- Preview content will be shown here -->
+            </div>
+            <div style="display: flex; gap: 15px; margin-top: 20px;">
+                <button onclick="closePreview()" class="btn info-btn">Continue Editing</button>
+                <button onclick="publishFromPreview()" class="btn success-btn">🚀 Publish Flash</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flash View Modal -->
+    <div id="flashViewModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeFlashView()">&times;</span>
+            <div id="flashViewContent">
+                <!-- Flash content will be shown here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Template Modal -->
+    <div id="editTemplateModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditTemplate()">&times;</span>
+            <h3>✏️ Edit Template</h3>
+            <div class="form-row">
+                <input type="text" id="editTemplateTitle" placeholder="Template Title" class="input-field">
+            </div>
+            <div class="form-row">
+                <input type="text" id="editTemplatePrompt" placeholder="Template Prompt" class="input-field">
+            </div>
+            <div class="form-row">
+                <textarea id="editTemplateStructure" placeholder="Template Structure (comma separated fields)" class="textarea-field" rows="4"></textarea>
+            </div>
+            <div style="display: flex; gap: 15px; margin-top: 20px;">
+                <button onclick="saveTemplateEdit()" class="btn success-btn">💾 Save Changes</button>
+                <button onclick="closeEditTemplate()" class="btn danger-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentUser = null;
+        let isAdmin = false;
+        let editingFlashId = null;
+        let editingTemplateId = null;
+
+        // Storage keys
+        const STORAGE = {
+            users: 'flashGen_users',
+            templates: 'flashGen_templates', 
+            flashes: 'flashGen_flashes',
+            history: 'flashGen_history'
+        };
+
+        // Initialize data
+        let users = JSON.parse(localStorage.getItem(STORAGE.users)) || [
+            { id: '1', username: 'admin', password: 'admin123', isAdmin: true },
+            { id: '2', username: 'user1', password: 'pass123', isAdmin: false }
+        ];
+
+        let templates = JSON.parse(localStorage.getItem(STORAGE.templates)) || [
+            {
+                id: '1',
+                title: 'Migration Flash',
+                prompt: 'Professional migration project presentation',
+                structure: ['Overall Intro', 'Project Timeline with Key Milestone', 'Key Call Out', 'What Did We Do?', 'Next Steps', 'Contributor Thanks Page']
+            }
+        ];
+
+        let flashes = JSON.parse(localStorage.getItem(STORAGE.flashes)) || [];
+        let userHistory = JSON.parse(localStorage.getItem(STORAGE.history)) || {};
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem(STORAGE.users, JSON.stringify(users));
+            localStorage.setItem(STORAGE.templates, JSON.stringify(templates));
+            localStorage.setItem(STORAGE.flashes, JSON.stringify(flashes));
+            localStorage.setItem(STORAGE.history, JSON.stringify(userHistory));
+        }
+
+        // Initialize user history
+        function initUserHistory(username) {
+            if (!userHistory[username]) {
+                userHistory[username] = {
+                    loginCount: 0,
+                    lastLogin: null,
+                    activities: []
+                };
+            }
+            userHistory[username].loginCount++;
+            userHistory[username].lastLogin = new Date().toISOString();
+            saveData();
+        }
+
+        // Add activity to history
+        function addActivity(username, activity) {
+            if (!userHistory[username]) return;
+            userHistory[username].activities.unshift({
+                ...activity,
+                timestamp: new Date().toISOString()
+            });
+            if (userHistory[username].activities.length > 50) {
+                userHistory[username].activities = userHistory[username].activities.slice(0, 50);
+            }
+            saveData();
+        }
+
+        // Authentication functions
+        function showAdminLogin() {
+            document.getElementById('adminModal').style.display = 'block';
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').style.display = 'none';
+            document.getElementById('adminKey').value = '';
+        }
+
+        function login() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                isAdmin = user.isAdmin;
+                initUserHistory(username);
+                addActivity(username, { type: 'login', description: 'User logged in' });
+                showLevel1();
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+            } else {
+                alert('Invalid credentials! Try: user1/pass123 or admin/admin123');
+            }
+        }
+
+        function adminLogin() {
+            const key = document.getElementById('adminKey').value;
+            if (key === '123456') {
+                const adminUser = users.find(u => u.isAdmin);
+                if (adminUser) {
+                    currentUser = adminUser;
+                    isAdmin = true;
+                    initUserHistory(adminUser.username);
+                    addActivity(adminUser.username, { type: 'admin_login', description: 'Admin panel accessed' });
+                    closeAdminModal();
+                    showLevel3();
+                }
+            } else {
+                alert('Invalid admin key! Use: 123456');
+            }
+        }
+
+        function logout() {
+            if (currentUser) {
+                addActivity(currentUser.username, { type: 'logout', description: 'User logged out' });
+            }
+            currentUser = null;
+            isAdmin = false;
+            editingFlashId = null;
+            showLoginPage();
+        }
+
+        // Page navigation
+        function showLoginPage() {
+            hideAllPages();
+            document.getElementById('loginPage').classList.add('active');
+        }
+
+        function showLevel1() {
+            hideAllPages();
+            document.getElementById('level1Page').classList.add('active');
+            document.getElementById('currentUser').textContent = `Welcome, ${currentUser.username}!`;
+            loadMyFlashes();
+            loadFlashLibrary();
+        }
+
+        function showLevel2(flashId = null) {
+            hideAllPages();
+            document.getElementById('level2Page').classList.add('active');
+            loadTemplateOptions();
+            
+            if (flashId) {
+                editingFlashId = flashId;
+                loadFlashForEdit(flashId);
+                document.getElementById('level2Title').textContent = '✏️ Edit Flash';
+                document.getElementById('publishBtn').textContent = '💾 Update Flash';
+            } else {
+                editingFlashId = null;
+                clearForm();
+                document.getElementById('level2Title').textContent = '✨ Create Flash';
+                document.getElementById('publishBtn').textContent = '🚀 Publish';
+            }
+        }
+
+        function showLevel3() {
+            if (!isAdmin) {
+                alert('Access denied! Admin privileges required.');
+                return;
+            }
+            hideAllPages();
+            document.getElementById('level3Page').classList.add('active');
+            loadUsers();
+            loadTemplates();
+        }
+
+        function hideAllPages() {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+        }
+
+        // Flash management functions
+        function loadMyFlashes() {
+            const myFlashes = flashes.filter(f => f.author === currentUser.username);
+            const container = document.getElementById('myFlashList');
+            
+            if (myFlashes.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 30px;">No flashes created yet. Create your first flash! 🚀</p>';
+                return;
+            }
+
+            container.innerHTML = myFlashes.map(flash => `
+                <div class="flash-item" ondblclick="viewFlash('${flash.id}')">
+                    <div class="flash-info">
+                        <h4>${flash.title}</h4>
+                        <small>Template: ${flash.template} • Created: ${new Date(flash.created).toLocaleDateString()}</small>
+                    </div>
+                    <div class="flash-actions">
+                        <button onclick="showLevel2('${flash.id}')" class="btn small-btn warning-btn">✏️ Edit</button>
+                        <button onclick="deleteFlash('${flash.id}')" class="btn small-btn danger-btn">🗑️ Delete</button>
+                        <button onclick="downloadFlash('${flash.id}')" class="btn small-btn success-btn">⬇️ Download</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadFlashLibrary() {
+            const container = document.getElementById('flashLibrary');
+            
+            if (flashes.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 30px;">No flashes in library yet. 📚</p>';
+                return;
+            }
+
+            container.innerHTML = flashes.map(flash => `
+                <div class="flash-item" ondblclick="viewFlash('${flash.id}')">
+                    <div class="flash-info">
+                        <h4>${flash.title}</h4>
+                        <small>By: ${flash.author} • Template: ${flash.template} • ${new Date(flash.created).toLocaleDateString()}</small>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadTemplateOptions() {
+            const select = document.getElementById('flashTemplate');
+            select.innerHTML = '<option value="">Select Template</option>';
+            templates.forEach(template => {
+                select.innerHTML += `<option value="${template.id}">${template.title}</option>`;
+            });
+        }
+
+        function updateContentFields() {
+            const templateId = document.getElementById('flashTemplate').value;
+            const template = templates.find(t => t.id === templateId);
+            const container = document.getElementById('contentFields');
+            
+            if (!template) {
+                container.style.display = 'none';
+                return;
+            }
+
+            container.style.display = 'block';
+            container.innerHTML = '<h3 style="margin-bottom: 15px;">📝 Content Fields</h3>' + 
+                template.structure.map(field => `
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">${field}:</label>
+                        <textarea id="field_${field.replace(/\s+/g, '_')}" placeholder="Enter ${field.toLowerCase()}" class="textarea-field" rows="3"></textarea>
+                    </div>
+                `).join('');
+        }
+
+        function clearForm() {
+            document.getElementById('flashTitle').value = '';
+            document.getElementById('flashTemplate').value = '';
+            document.getElementById('contentFields').style.display = 'none';
+        }
+
+        function loadFlashForEdit(flashId) {
+            const flash = flashes.find(f => f.id === flashId);
+            if (!flash) return;
+
+            document.getElementById('flashTitle').value = flash.title;
+            document.getElementById('flashTemplate').value = flash.templateId;
+            updateContentFields();
+
+            setTimeout(() => {
+                Object.keys(flash.content).forEach(key => {
+                    const field = document.getElementById(`field_${key}`);
+                    if (field) field.value = flash.content[key];
+                });
+            }, 100);
+        }
+
+        function previewFlash() {
+            const title = document.getElementById('flashTitle').value.trim();
+            const templateId = document.getElementById('flashTemplate').value;
+            
+            if (!title || !templateId) {
+                alert('Please fill in title and select a template');
+                return;
+            }
+
+            const template = templates.find(t => t.id === templateId);
+            let content = `
+                <h2 style="color: #2c3e50; margin-bottom: 20px;">${title}</h2>
+                <p style="color: #7f8c8d; margin-bottom: 30px;"><strong>Template:</strong> ${template.title}</p>
+            `;
+
+            template.structure.forEach(field => {
+                const fieldId = `field_${field.replace(/\s+/g, '_')}`;
+                const fieldElement = document.getElementById(fieldId);
+                const fieldValue = fieldElement ? fieldElement.value : '';
+                
+                content += `
+                    <div class="flash-section">
+                        <h4>${field}</h4>
+                        <p>${fieldValue || '<em style="color: #bdc3c7;">No content provided</em>'}</p>
+                    </div>
+                `;
+            });
+
+            document.getElementById('previewContent').innerHTML = content;
+            document.getElementById('previewModal').style.display = 'block';
+        }
+
+        function closePreview() {
+            document.getElementById('previewModal').style.display = 'none';
+        }
+
+        function publishFromPreview() {
+            closePreview();
+            publishFlash();
+        }
+
+        function publishFlash() {
+            const title = document.getElementById('flashTitle').value.trim();
+            const templateId = document.getElementById('flashTemplate').value;
+            
+            if (!title || !templateId) {
+                alert('Please fill in title and select a template');
+                return;
+            }
+
+            const template = templates.find(t => t.id === templateId);
+            const content = {};
+            
+            template.structure.forEach(field => {
+                const fieldId = `field_${field.replace(/\s+/g, '_')}`;
+                const fieldElement = document.getElementById(fieldId);
+                if (fieldElement) {
+                    content[field.replace(/\s+/g, '_')] = fieldElement.value;
+                }
+            });
+
+            if (editingFlashId) {
+                // Update existing flash
+                const flashIndex = flashes.findIndex(f => f.id === editingFlashId);
+                if (flashIndex !== -1) {
+                    flashes[flashIndex] = {
+                        ...flashes[flashIndex],
+                        title,
+                        templateId,
+                        template: template.title,
+                        content,
+                        modified: new Date().toISOString()
+                    };
+                    
+                    addActivity(currentUser.username, {
+                        type: 'edit_flash',
+                        description: `Updated flash: ${title}`
+                    });
+                    
+                    alert('Flash updated successfully! 🎉');
+                }
+            } else {
+                // Create new flash
+                const flash = {
+                    id: Date.now().toString(),
+                    title,
+                    templateId,
+                    template: template.title,
+                    content,
+                    author: currentUser.username,
+                    created: new Date().toISOString()
+                };
+                
+                flashes.push(flash);
+                
+                addActivity(currentUser.username, {
+                    type: 'create_flash',
+                    description: `Created new flash: ${title}`
+                });
+                
+                alert('Flash published successfully! 🚀');
+            }
+
+            saveData();
+            showLevel1();
+        }
+
+        function deleteFlash(flashId) {
+            const flash = flashes.find(f => f.id === flashId);
+            if (!flash) return;
+
+            if (confirm(`Delete flash "${flash.title}"? This action cannot be undone.`)) {
+                flashes = flashes.filter(f => f.id !== flashId);
+                
+                addActivity(currentUser.username, {
+                    type: 'delete_flash',
+                    description: `Deleted flash: ${flash.title}`
+                });
+                
+                saveData();
+                loadMyFlashes();
+                loadFlashLibrary();
+                alert('Flash deleted successfully! 🗑️');
+            }
+        }
+
+        function downloadFlash(flashId) {
+            const flash = flashes.find(f => f.id === flashId);
+            if (!flash) return;
+
+            // Create a canvas to generate PNG
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size (vertical format - portrait)
+            canvas.width = 1080;
+            canvas.height = 1920;
+            
+            // Create multi-color dopamine gradient background
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#ff6b6b');
+            gradient.addColorStop(0.25, '#4ecdc4');
+            gradient.addColorStop(0.5, '#45b7d1');
+            gradient.addColorStop(0.75, '#96ceb4');
+            gradient.addColorStop(1, '#feca57');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Add overlay for better text readability
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Main content card background
+            const cardX = 60;
+            const cardY = 80;
+            const cardWidth = canvas.width - 120;
+            const cardHeight = canvas.height - 160;
+            
+            // Create rounded rectangle for main card
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+            ctx.beginPath();
+            ctx.roundRect(cardX, cardY, cardWidth, cardHeight, 30);
+            ctx.fill();
+            
+            // Add subtle shadow effect
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+            ctx.shadowBlur = 20;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 10;
+            
+            // Reset shadow for text
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+            
+            // Header section with gradient
+            const headerGradient = ctx.createLinearGradient(cardX, cardY, cardX, cardY + 250);
+            headerGradient.addColorStop(0, '#667eea');
+            headerGradient.addColorStop(1, '#764ba2');
+            ctx.fillStyle = headerGradient;
+            ctx.beginPath();
+            ctx.roundRect(cardX, cardY, cardWidth, 250, [30, 30, 0, 0]);
+            ctx.fill();
+            
+            // Flash title (multi-line if needed)
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 48px Calibri, Arial, sans-serif';
+            ctx.textAlign = 'center';
+            
+            // Wrap title text if too long
+            const titleWords = flash.title.split(' ');
+            let titleLine = '';
+            let titleY = cardY + 120;
+            const titleMaxWidth = cardWidth - 80;
+            
+            for (let n = 0; n < titleWords.length; n++) {
+                const testLine = titleLine + titleWords[n] + ' ';
+                const metrics = ctx.measureText(testLine);
+                
+                if (metrics.width > titleMaxWidth && n > 0) {
+                    ctx.fillText(titleLine, canvas.width / 2, titleY);
+                    titleLine = titleWords[n] + ' ';
+                    titleY += 55;
+                } else {
+                    titleLine = testLine;
+                }
+            }
+            ctx.fillText(titleLine, canvas.width / 2, titleY);
+            
+            // Template badge
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.font = '24px Calibri, Arial, sans-serif';
+            ctx.fillText(`📋 ${flash.template}`, canvas.width / 2, titleY + 60);
+            
+            // Content area - single column vertical layout
+            const contentStartY = cardY + 320;
+            const template = templates.find(t => t.id === flash.templateId);
+            
+            if (template) {
+                let yPosition = contentStartY;
+                const contentX = cardX + 40;
+                const contentWidth = cardWidth - 80;
+                
+                template.structure.forEach((field, index) => {
+                    if (yPosition > cardY + cardHeight - 150) return;
+                    
+                    const fieldKey = field.replace(/\s+/g, '_');
+                    const fieldValue = flash.content[fieldKey] || 'No content provided';
+                    
+                    // Calculate section height based on content
+                    const estimatedLines = Math.ceil(fieldValue.length / 60);
+                    const sectionHeight = Math.max(120, 80 + estimatedLines * 30);
+                    
+                    // Section background with alternating colors
+                    const sectionColors = [
+                        'rgba(255, 107, 107, 0.15)',
+                        'rgba(78, 205, 196, 0.15)', 
+                        'rgba(69, 183, 209, 0.15)',
+                        'rgba(150, 206, 180, 0.15)',
+                        'rgba(254, 202, 87, 0.15)',
+                        'rgba(155, 89, 182, 0.15)'
+                    ];
+                    
+                    ctx.fillStyle = sectionColors[index % sectionColors.length];
+                    ctx.beginPath();
+                    ctx.roundRect(contentX - 20, yPosition - 15, contentWidth, sectionHeight, 15);
+                    ctx.fill();
+                    
+                    // Field title with emoji
+                    const emojis = ['🎯', '📅', '⭐', '🔧', '🚀', '👥', '💡', '📊', '🎨', '📈'];
+                    ctx.fillStyle = '#2c3e50';
+                    ctx.font = 'bold 28px Calibri, Arial, sans-serif';
+                    ctx.textAlign = 'left';
+                    ctx.fillText(`${emojis[index % emojis.length]} ${field}`, contentX, yPosition + 25);
+                    
+                    // Field content with text wrapping
+                    ctx.font = '22px Calibri, Arial, sans-serif';
+                    ctx.fillStyle = '#34495e';
+                    
+                    const words = fieldValue.split(' ');
+                    let line = '';
+                    let lineY = yPosition + 65;
+                    const maxWidth = contentWidth - 40;
+                    
+                    for (let n = 0; n < words.length; n++) {
+                        const testLine = line + words[n] + ' ';
+                        const metrics = ctx.measureText(testLine);
+                        
+                        if (metrics.width > maxWidth && n > 0) {
+                            ctx.fillText(line, contentX, lineY);
+                            line = words[n] + ' ';
+                            lineY += 28;
+                            if (lineY > yPosition + sectionHeight - 20) break;
+                        } else {
+                            line = testLine;
+                        }
+                    }
+                    ctx.fillText(line, contentX, lineY);
+                    
+                    yPosition += sectionHeight + 25;
+                });
+            }
+            
+            // Footer with author and date
+            const footerY = cardY + cardHeight - 40;
+            ctx.fillStyle = '#7f8c8d';
+            ctx.font = '18px Calibri, Arial, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(`Created by ${flash.author}`, canvas.width / 2, footerY - 20);
+            ctx.fillText(`${new Date(flash.created).toLocaleDateString()}`, canvas.width / 2, footerY);
+            
+            // Add decorative elements in corners
+            ctx.fillStyle = 'rgba(102, 126, 234, 0.2)';
+            for (let i = 0; i < 3; i++) {
+                ctx.beginPath();
+                ctx.arc(cardX + 30 + i * 25, cardY + 30 + i * 20, 6, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                ctx.beginPath();
+                ctx.arc(cardX + cardWidth - 30 - i * 25, cardY + 30 + i * 20, 6, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+            
+            // Convert canvas to PNG and download
+            canvas.toBlob(function(blob) {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${flash.title.replace(/\s+/g, '_')}_flash.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                
+                addActivity(currentUser.username, {
+                    type: 'download_flash',
+                    description: `Downloaded flash as PNG: ${flash.title}`
+                });
+                
+                alert(`Flash downloaded as vertical PNG: ${flash.title.replace(/\s+/g, '_')}_flash.png 📱`);
+            }, 'image/png');
+        }
+
+        function viewFlash(flashId) {
+            const flash = flashes.find(f => f.id === flashId);
+            if (!flash) return;
+
+            const template = templates.find(t => t.id === flash.templateId);
+            let content = `
+                <h2 style="color: #2c3e50; margin-bottom: 20px;">${flash.title}</h2>
+                <p style="color: #7f8c8d; margin-bottom: 10px;"><strong>Template:</strong> ${flash.template}</p>
+                <p style="color: #7f8c8d; margin-bottom: 10px;"><strong>Author:</strong> ${flash.author}</p>
+                <p style="color: #7f8c8d; margin-bottom: 30px;"><strong>Created:</strong> ${new Date(flash.created).toLocaleDateString()}</p>
+            `;
+
+            if (template) {
+                template.structure.forEach(field => {
+                    const fieldKey = field.replace(/\s+/g, '_');
+                    const fieldValue = flash.content[fieldKey] || '';
+                    content += `
+                        <div class="flash-section">
+                            <h4>${field}</h4>
+                            <p>${fieldValue || '<em style="color: #bdc3c7;">No content provided</em>'}</p>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('flashViewContent').innerHTML = content;
+            document.getElementById('flashViewModal').style.display = 'block';
+        }
+
+        function closeFlashView() {
+            document.getElementById('flashViewModal').style.display = 'none';
+        }
+
+        // Admin functions
+        function addUser() {
+            const username = document.getElementById('newUsername').value.trim();
+            const password = document.getElementById('newPassword').value;
+            
+            if (!username || !password) {
+                alert('Please fill in username and password');
+                return;
+            }
+
+            if (users.find(u => u.username === username)) {
+                alert('Username already exists');
+                return;
+            }
+
+            const user = {
+                id: Date.now().toString(),
+                username,
+                password,
+                isAdmin: false
+            };
+
+            users.push(user);
+            saveData();
+            loadUsers();
+            
+            document.getElementById('newUsername').value = '';
+            document.getElementById('newPassword').value = '';
+            
+            addActivity(currentUser.username, {
+                type: 'add_user',
+                description: `Added new user: ${username}`
+            });
+            
+            alert('User added successfully! 👥');
+        }
+
+        function addTemplate() {
+            const title = document.getElementById('templateTitle').value.trim();
+            const prompt = document.getElementById('templatePrompt').value.trim();
+            const structure = document.getElementById('templateStructure').value.trim();
+            
+            if (!title || !prompt || !structure) {
+                alert('Please fill in all template fields');
+                return;
+            }
+
+            const fields = structure.split(',').map(f => f.trim()).filter(f => f);
+            
+            const template = {
+                id: Date.now().toString(),
+                title,
+                prompt,
+                structure: fields
+            };
+
+            templates.push(template);
+            saveData();
+            loadTemplates();
+            
+            document.getElementById('templateTitle').value = '';
+            document.getElementById('templatePrompt').value = '';
+            document.getElementById('templateStructure').value = '';
+            
+            addActivity(currentUser.username, {
+                type: 'add_template',
+                description: `Added new template: ${title}`
+            });
+            
+            alert('Template added successfully! 🎭');
+        }
+
+        function loadUsers() {
+            const container = document.getElementById('userList');
+            container.innerHTML = users.map(user => `
+                <div class="flash-item">
+                    <div class="flash-info">
+                        <h4>${user.username}</h4>
+                        <small>${user.isAdmin ? 'Administrator' : 'Regular User'}</small>
+                    </div>
+                    <div class="flash-actions">
+                        <button onclick="deleteUser('${user.id}')" class="btn small-btn danger-btn">🗑️ Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadTemplates() {
+            const container = document.getElementById('templateList');
+            container.innerHTML = templates.map(template => `
+                <div class="flash-item">
+                    <div class="flash-info">
+                        <h4>${template.title}</h4>
+                        <small>Fields: ${template.structure.join(', ')}</small>
+                    </div>
+                    <div class="flash-actions">
+                        <button onclick="editTemplate('${template.id}')" class="btn small-btn warning-btn">✏️ Edit</button>
+                        <button onclick="deleteTemplate('${template.id}')" class="btn small-btn danger-btn">🗑️ Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function deleteUser(userId) {
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+
+            if (user.id === currentUser.id) {
+                alert('Cannot delete current user');
+                return;
+            }
+            
+            if (confirm(`Delete user "${user.username}"? This action cannot be undone.`)) {
+                users = users.filter(u => u.id !== userId);
+                saveData();
+                loadUsers();
+                
+                addActivity(currentUser.username, {
+                    type: 'delete_user',
+                    description: `Deleted user: ${user.username}`
+                });
+            }
+        }
+
+        function deleteTemplate(templateId) {
+            const template = templates.find(t => t.id === templateId);
+            if (!template) return;
+            
+            if (confirm(`Delete template "${template.title}"? This action cannot be undone.`)) {
+                templates = templates.filter(t => t.id !== templateId);
+                saveData();
+                loadTemplates();
+                
+                addActivity(currentUser.username, {
+                    type: 'delete_template',
+                    description: `Deleted template: ${template.title}`
+                });
+            }
+        }
+
+        function editTemplate(templateId) {
+            const template = templates.find(t => t.id === templateId);
+            if (!template) return;
+
+            editingTemplateId = templateId;
+            document.getElementById('editTemplateTitle').value = template.title;
+            document.getElementById('editTemplatePrompt').value = template.prompt;
+            document.getElementById('editTemplateStructure').value = template.structure.join(', ');
+            document.getElementById('editTemplateModal').style.display = 'block';
+        }
+
+        function closeEditTemplate() {
+            document.getElementById('editTemplateModal').style.display = 'none';
+            editingTemplateId = null;
+        }
+
+        function saveTemplateEdit() {
+            if (!editingTemplateId) return;
+
+            const title = document.getElementById('editTemplateTitle').value.trim();
+            const prompt = document.getElementById('editTemplatePrompt').value.trim();
+            const structure = document.getElementById('editTemplateStructure').value.trim();
+            
+            if (!title || !prompt || !structure) {
+                alert('Please fill in all template fields');
+                return;
+            }
+
+            const fields = structure.split(',').map(f => f.trim()).filter(f => f);
+            const templateIndex = templates.findIndex(t => t.id === editingTemplateId);
+            
+            if (templateIndex !== -1) {
+                templates[templateIndex] = {
+                    ...templates[templateIndex],
+                    title,
+                    prompt,
+                    structure: fields
+                };
+                
+                saveData();
+                loadTemplates();
+                closeEditTemplate();
+                
+                addActivity(currentUser.username, {
+                    type: 'edit_template',
+                    description: `Updated template: ${title}`
+                });
+                
+                alert('Template updated successfully! ✏️');
+            }
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            showLoginPage();
+        });
+    </script>
+</body>
+</html>
